@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Acerto de Contas</title>
+    <meta name="theme-color" content="#000000">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Acerto">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
+
+        body {
+            background-color: #000000;
+            color: #FFFFFF;
+            font-family: 'Lilita One', cursive;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        h1 {
+            font-size: 32px;
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            width: 100%;
+        }
+        .input-group {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 15px;
+            font-size: 24px;
+            font-family: 'Lilita One', cursive;
+            border: 2px solid #333;
+            border-radius: 10px;
+            background-color: #111;
+            color: #4CAF50;
+            box-sizing: border-box;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        button {
+            width: 100%;
+            padding: 20px;
+            font-size: 24px;
+            font-family: 'Lilita One', cursive;
+            background-color: #4CAF50;
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 15px;
+            text-transform: uppercase;
+        }
+        button:active {
+            background-color: #388E3C;
+        }
+        #resultado {
+            margin-top: 30px;
+            width: 100%;
+            font-size: 20px;
+            background-color: #111;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #333;
+            display: none;
+            box-sizing: border-box;
+        }
+        .destaque {
+            color: #4CAF50;
+            font-size: 30px;
+        }
+        hr { border-color: #333; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>Acerto</h1>
+
+    <div class="input-group">
+        <label>Luz (R$):</label>
+        <input type="text" inputmode="decimal" id="luz" placeholder="">
+    </div>
+    <div class="input-group">
+        <label>Água Encanada (R$):</label>
+        <input type="text" inputmode="decimal" id="agua" placeholder="">
+    </div>
+    <div class="input-group">
+        <label>Gás (Meu - R$):</label>
+        <input type="text" inputmode="decimal" id="gas" placeholder="">
+    </div>
+    <div class="input-group">
+        <label>Água Mineral (Meu - R$):</label>
+        <input type="text" inputmode="decimal" id="mineral" placeholder="">
+    </div>
+
+    <button onclick="calcular()">Calcular</button>
+
+    <div id="resultado"></div>
+
+    <script>
+        function calcular() {
+            let luz     = parseFloat(document.getElementById('luz').value.replace(',', '.'))     || 0;
+            let agua    = parseFloat(document.getElementById('agua').value.replace(',', '.'))    || 0;
+            let gas     = parseFloat(document.getElementById('gas').value.replace(',', '.'))     || 0;
+            let mineral = parseFloat(document.getElementById('mineral').value.replace(',', '.')) || 0;
+
+            let totalPrincipal    = luz + agua;
+            let minhaPartePrincipal = totalPrincipal / 3;
+
+            let meuGasto      = gas + mineral;
+            let minhaParteGasto = meuGasto / 3;
+            let meuCredito    = minhaParteGasto * 2;
+
+            let aPaga = minhaPartePrincipal - meuCredito;
+            let bPaga = minhaPartePrincipal + minhaParteGasto;
+            let cPaga = minhaPartePrincipal + minhaParteGasto;
+
+            let resDiv = document.getElementById('resultado');
+            resDiv.style.display = 'block';
+
+            let msgA = aPaga >= 0
+                ? `VOCÊ PAGA:<br><span class="destaque">R$ ${aPaga.toFixed(2)}</span>`
+                : `VOCÊ RECEBE (Lucro):<br><span class="destaque">R$ ${Math.abs(aPaga).toFixed(2)}</span>`;
+
+            resDiv.innerHTML = `
+                <p>${msgA}</p>
+                <hr>
+                <p>PESSOA B PAGA:<br><span class="destaque">R$ ${bPaga.toFixed(2)}</span></p>
+                <p>PESSOA C PAGA:<br><span class="destaque">R$ ${cPaga.toFixed(2)}</span></p>
+            `;
+
+            resDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    </script>
+</body>
+</html>
